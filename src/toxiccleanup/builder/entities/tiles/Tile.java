@@ -1,5 +1,6 @@
 package toxiccleanup.builder.entities.tiles;
 
+import toxiccleanup.builder.GameState;
 import toxiccleanup.builder.entities.GameEntity;
 import toxiccleanup.builder.entities.PlayerOverHook;
 import toxiccleanup.builder.ui.RenderableGroup;
@@ -8,6 +9,9 @@ import toxiccleanup.engine.art.sprites.SpriteGroup;
 import toxiccleanup.engine.game.HasTick;
 import toxiccleanup.engine.game.Positionable;
 import toxiccleanup.engine.renderer.Renderable;
+import toxiccleanup.builder.SpriteGallery;
+import toxiccleanup.engine.art.ArtNotFoundException;
+import toxiccleanup.engine.art.sprites.Sprite;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,62 +44,81 @@ import java.util.List;
  * @provided
  * @stage1
  */
-public abstract class Tile extends GameEntity implements PlayerOverHook, RenderableGroup, HasTick{
+public abstract class Tile extends GameEntity implements PlayerOverHook, RenderableGroup, HasTick {
     private SpriteGroup art;
     private List<GameEntity> stackedEntities;
 
-    public Tile (Positionable position, SpriteGroup art){
+    // Constructor
+    public Tile(Positionable position, SpriteGroup art) {
         super(position);
         // pre condition:
-        if(position.getX() < 0 || position.getY() < 0){
+        if (position.getX() < 0 || position.getY() < 0) {
             throw new IllegalArgumentException("Position cannot be negative");
         }
         this.art = art;
         this.stackedEntities = new ArrayList<>();
     }
-    public Tile(){}
 
-    public void setArt(SpriteGroup art){
+    public Tile(Positionable position) {
+        this(position, null);
+    }
+
+    public void setArt(SpriteGroup art) {
         this.art = art;
     }
-    public void updateSprite(String artName) throws ArtNotFoundException{
 
+    public void updateSprite(String artName) throws ArtNotFoundException {
+        Sprite newSprite = this.art.getSprite(artName);
+
+        this.setSprite(newSprite);
     }
+
+
     @Override
-    public void tick(){
+    public void tick(EngineState engine, GameState game) {
         stackedEntities.removeIf(GameEntity::isMarkedForRemoval);
-        for(GameEntity entity : stackedEntities){
-            if(entity instanceof HasTick){
-                ((HasTick) entity).tick();
-            }
+        for (GameEntity entity : stackedEntities) {
+            entity.tick(engine, game);
         }
     }
-    public List<GameEntity> getStackedEntities(){
+
+    public List<GameEntity> getStackedEntities() {
         return new ArrayList<>(stackedEntities);
     }
-    public List<PlayerOverHook> getStackedEntitiesWithPlayerOverHook(){
+
+    public List<PlayerOverHook> getStackedEntitiesWithPlayerOverHook() {
         List<PlayerOverHook> hooks = new ArrayList<>();
-        for(GameEntity entity : stackedEntities ){
-            if(entity instanceof PlayerOverHook){
+        for (GameEntity entity : stackedEntities) {
+            if (entity instanceof PlayerOverHook) {
                 hooks.add((PlayerOverHook) entity);
             }
         }
         return hooks;
     }
-    public void placeOn(GameEntity tile){
-        if(tile != null){
+
+    public void placeOn(GameEntity tile) {
+        if (tile != null) {
             stackedEntities.add(tile);
         }
     }
+
     @Override
-    public void playerOver(EngineState state, GameState game){
-        for(PlayerOverHook hook : getStackedEntitiesWithPlayerOverHook()){
+    public void playerOver(EngineState state, GameState game) {
+        for (PlayerOverHook hook : getStackedEntitiesWithPlayerOverHook()) {
             hook.playerOver(state, game);
         }
     }
+
     @Override
-    public List<Renderable> render(){
+    public List<Renderable> render() {
         List<Renderable> renderables = new ArrayList<>();
+        renderables.add(this);
+
+        for (GameEntity entity : stackedEntities) {
+            if (entity instanceof Renderable) {
+                renderables.add((Renderable) entity);
+            }
+        }
         return renderables;
     }
 }

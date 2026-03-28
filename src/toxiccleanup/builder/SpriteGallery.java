@@ -62,4 +62,7 @@ public class SpriteGallery {
             throw new RuntimeException(e);
         }
     }
+//
+//    public static SpriteGroup getSprite(String artName) {
+//    }
 }

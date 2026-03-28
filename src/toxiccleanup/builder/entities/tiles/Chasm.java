@@ -1,19 +1,26 @@
 package toxiccleanup.builder.entities.tiles;
 
 import toxiccleanup.builder.GameState;
+import toxiccleanup.builder.SpriteGallery;
 import toxiccleanup.builder.entities.PlayerOverHook;
 import toxiccleanup.engine.EngineState;
+import toxiccleanup.engine.art.ArtNotFoundException;
 import toxiccleanup.engine.game.Positionable;
+import toxiccleanup.builder.machines.Adjustable;
 
 import java.util.List;
 
 public class Chasm extends Tile implements PlayerOverHook {
     private boolean fallable;
-    private String facing;
 
     public Chasm(Positionable position){
-        super(position);
+        super(position, SpriteGallery.chasm );
         this.fallable = true;
+        try{
+            updateSprite("chasm");
+        } catch (ArtNotFoundException exception){
+            System.out.println("Art not found: " + exception.getMessage());
+        }
     }
     public Chasm(Positionable position, String facing){
         super(position);
@@ -22,12 +29,17 @@ public class Chasm extends Tile implements PlayerOverHook {
             throw new IllegalArgumentException("Invalid facing sprite");
         }
         this.fallable = false;
+        try{
+            updateSprite(facing);
+        } catch (ArtNotFoundException exception){
+            System.out.println("Art not found: " + exception.getMessage());
+        }
     }
     @Override
     public void playerOver(EngineState engine, GameState game){
         super.playerOver(engine, game);
         if(fallable){
-
+            game.getPlayer().adjust(1);
         }
     }
 
