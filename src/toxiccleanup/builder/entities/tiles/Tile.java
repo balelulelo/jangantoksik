@@ -53,6 +53,7 @@ public abstract class Tile extends GameEntity implements PlayerOverHook, Rendera
         this.art = art;
         this.stackedEntities = new ArrayList<>();
     }
+    public Tile(){}
 
     public void setArt(SpriteGroup art){
         this.art = art;
@@ -81,9 +82,9 @@ public abstract class Tile extends GameEntity implements PlayerOverHook, Rendera
         }
         return hooks;
     }
-    public void placeOn(GameEntity entity){
-        if(entity != null){
-            stackedEntities.add(entity);
+    public void placeOn(GameEntity tile){
+        if(tile != null){
+            stackedEntities.add(tile);
         }
     }
     @Override
