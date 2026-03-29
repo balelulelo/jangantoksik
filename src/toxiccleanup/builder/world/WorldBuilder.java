@@ -18,17 +18,17 @@ public class WorldBuilder {
         List<Tile> tiles = new ArrayList<>();
         String[] lines = text.split("\n");
 
-        int lineNum = dimensions.windowSize() / dimensions.tileSize();
+        int n = dimensions.windowSize() / dimensions.tileSize();
 
-        // validate length of line (lineNum)
-        if(lines.length != lineNum){
-            throw new WorldLoadException("Invalid number of lines. Expected " + lineNum);
+        // validate length of line (n)
+        if(lines.length != n){
+            throw new WorldLoadException("Invalid number of lines. Expected " + n);
         }
 
-        for(int rows = 0; rows < lineNum; rows++){
+        for(int rows = 0; rows < n; rows++){
             String line = lines[rows];
 
-            if (lines.length == lineNum) {
+            if (lines.length == n) {
                 for (int cols = 0; cols < line.length(); cols++) {
                     char symbol = line.charAt(cols);
 

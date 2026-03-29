@@ -1,7 +1,9 @@
 package toxiccleanup.builder;
 
+import toxiccleanup.builder.machines.MachinesManager;
 import toxiccleanup.builder.machines.Teleporter;
 import toxiccleanup.builder.player.PlayerManager;
+import toxiccleanup.builder.ui.GuiManager;
 import toxiccleanup.builder.world.ToxicWorld;
 import toxiccleanup.builder.world.WorldBuilder;
 import toxiccleanup.builder.world.WorldLoadException;
@@ -27,8 +29,10 @@ import java.util.List;
  */
 public class ToxicCleanup implements Game {
     private static final int DAMAGE_INTERVAL = 1800; // 1 HP every 30 seconds at 60 ticks/s
-    private final PlayerManager playerManager;
+    private final PlayerManager player;
     private ToxicWorld world;
+    private MachinesManager machine;
+    private GuiManager gui;
 
 
     /**
@@ -64,13 +68,17 @@ public class ToxicCleanup implements Game {
         final int playerX = 5 * dimensions.tileSize() + dimensions.tileSize() / 2;
         final int playerY = 5 * dimensions.tileSize() + dimensions.tileSize() / 2;
 
-        this.playerManager = new PlayerManager(new Position(playerX, playerY));
+        this.player = new PlayerManager(new Position(playerX, playerY));
+        // loads the world based on the map
         this.world = WorldBuilder.fromFile(dimensions, "resources/wasteland.map");
+        // initialized requirements for machine and GUI in stage 2
+        this.machine = new MachinesManager();
+        this.gui = new GuiManager();
 
     }
 
     /**
-     *Advances the game by one frame.
+     * Advances the game by one frame.
      *
      * <p>Each call updates active game systems (world, player, and GUI), applies end-state checks,
      * and enforces periodic toxicity damage during ongoing play.
@@ -92,7 +100,7 @@ public class ToxicCleanup implements Game {
      * @ensures If the player is dead at end-state evaluation, the lose overlay is shown.
      * @ensures If no toxic fields remain at end-state evaluation, the win overlay is shown.
      * @ensures If neither end condition holds, gameplay progresses normally and periodic damage
-     *          is applied when the damage timer finishes.
+     * is applied when the damage timer finishes.
      * @provided
      * @stage0
      * @stage2
@@ -100,9 +108,17 @@ public class ToxicCleanup implements Game {
      */
     @Override
     public void tick(EngineState engine) {
-        GameState state = new ToxicCleanupGameState(this.playerManager);
+        GameState state = new ToxicCleanupGameState(this.world, this.player, this.machine);
+        // runs the timer, power, and hp  UI
+        this.gui.tick(engine,state);
 
-        this.playerManager.tick(engine, state);
+        // if player's hp drops below 0, set game as lose and print message
+        if (!player.isAlive()){
+            this.gui.lose(engine);
+        }
+        // updates both player and the world
+        this.world.tick(engine, state);
+        this.player.tick(engine, state);
 
     }
 
@@ -127,10 +143,11 @@ public class ToxicCleanup implements Game {
     public List<Renderable> render() {
         final List<Renderable> renderables = new ArrayList<>();
 
-        if(this.world != null){
+        if (this.world != null) {
             renderables.addAll(this.world.render());
         }
-        renderables.addAll(playerManager.render());
+        renderables.addAll(player.render());
+        renderables.addAll(gui.render());
         return renderables;
     }
 
