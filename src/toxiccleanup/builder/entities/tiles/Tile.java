@@ -70,12 +70,16 @@ public abstract class Tile extends GameEntity implements PlayerOverHook, Rendera
     public void updateSprite(String artName) throws ArtNotFoundException {
         Sprite newSprite = this.art.getSprite(artName);
 
-        this.setSprite(newSprite);
+        if (this.art != null) {
+            this.setSprite(newSprite);
+
+        }
     }
 
 
     @Override
     public void tick(EngineState engine, GameState game) {
+        super.tick(engine, game);
         stackedEntities.removeIf(GameEntity::isMarkedForRemoval);
         for (GameEntity entity : stackedEntities) {
             entity.tick(engine, game);

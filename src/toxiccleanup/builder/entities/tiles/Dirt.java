@@ -11,7 +11,7 @@ public class Dirt extends Tile implements PlayerOverHook {
     public Dirt(Positionable position){
         super(position, SpriteGallery.dirt);
         try{
-            updateSprite("unpaved");
+            updateSprite("Dirt");
         } catch (ArtNotFoundException exception){
             System.out.println("Art not found: " + exception.getMessage());
         }

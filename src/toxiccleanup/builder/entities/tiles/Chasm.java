@@ -17,7 +17,7 @@ public class Chasm extends Tile implements PlayerOverHook {
         super(position, SpriteGallery.chasm );
         this.fallable = true;
         try{
-            updateSprite("chasm");
+            updateSprite("Chasm");
         } catch (ArtNotFoundException exception){
             System.out.println("Art not found: " + exception.getMessage());
         }

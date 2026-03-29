@@ -10,7 +10,7 @@ public class Grass extends Tile{
     public Grass(Positionable position){
         super(position, SpriteGallery.grass);
         try{
-            updateSprite("plain");
+            updateSprite("Grass");
         }catch (ArtNotFoundException exception){
             System.out.println("Art not found: " + exception.getMessage());
         }
