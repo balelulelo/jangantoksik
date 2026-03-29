@@ -17,13 +17,13 @@ public class Chasm extends Tile implements PlayerOverHook {
         super(position, SpriteGallery.chasm );
         this.fallable = true;
         try{
-            updateSprite("Chasm");
+            updateSprite("default");
         } catch (ArtNotFoundException exception){
             System.out.println("Art not found: " + exception.getMessage());
         }
     }
     public Chasm(Positionable position, String facing){
-        super(position);
+        super(position, SpriteGallery.chasm);
         // pre condition:
         if(!List.of("left", "leftslope", "right", "rightslope").contains(facing)){
             throw new IllegalArgumentException("Invalid facing sprite");

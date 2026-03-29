@@ -2,6 +2,8 @@ package toxiccleanup.builder;
 
 import toxiccleanup.builder.machines.Teleporter;
 import toxiccleanup.builder.player.PlayerManager;
+import toxiccleanup.builder.world.ToxicWorld;
+import toxiccleanup.builder.world.WorldBuilder;
 import toxiccleanup.builder.world.WorldLoadException;
 import toxiccleanup.engine.EngineState;
 import toxiccleanup.engine.game.Game;
@@ -26,6 +28,7 @@ import java.util.List;
 public class ToxicCleanup implements Game {
     private static final int DAMAGE_INTERVAL = 1800; // 1 HP every 30 seconds at 60 ticks/s
     private final PlayerManager playerManager;
+    private ToxicWorld world;
 
 
     /**
@@ -62,6 +65,7 @@ public class ToxicCleanup implements Game {
         final int playerY = 5 * dimensions.tileSize() + dimensions.tileSize() / 2;
 
         this.playerManager = new PlayerManager(new Position(playerX, playerY));
+        this.world = WorldBuilder.fromFile(dimensions, "resources/wasteland.map");
 
     }
 
@@ -122,6 +126,10 @@ public class ToxicCleanup implements Game {
     @Override
     public List<Renderable> render() {
         final List<Renderable> renderables = new ArrayList<>();
+
+        if(this.world != null){
+            renderables.addAll(this.world.render());
+        }
         renderables.addAll(playerManager.render());
         return renderables;
     }

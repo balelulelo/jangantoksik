@@ -17,13 +17,13 @@ public class TileFactory {
         } else if (symbol == 'g'){
             return new Grass(position);
         } else if (symbol == 'l'){
-            return new Chasm(position, "leftslope");
-        } else if (symbol == 'L'){
             return new Chasm(position, "left");
+        } else if (symbol == 'L'){
+            return new Chasm(position, "leftslope");
         } else if (symbol == 'r'){
             return new Chasm(position, "right");
         } else if (symbol == 'R') {
-            return new Chasm(position, "right");
+            return new Chasm(position, "rightslope");
         } else if (symbol == 'c') {
             return new Chasm(position);
         } else{

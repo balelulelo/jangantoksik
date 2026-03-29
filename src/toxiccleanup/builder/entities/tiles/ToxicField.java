@@ -25,7 +25,7 @@ public class ToxicField extends Tile implements Adjustable {
 
     private void updateVisuals() {
         try {
-            updateSprite(String.valueOf(this.toxicity));
+            updateSprite("default");
         } catch (ArtNotFoundException exception) {
         }
     }

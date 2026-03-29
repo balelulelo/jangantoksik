@@ -68,6 +68,10 @@ public abstract class Tile extends GameEntity implements PlayerOverHook, Rendera
     }
 
     public void updateSprite(String artName) throws ArtNotFoundException {
+        if(this.art == null){
+            return; // validation, since i got a nullpointerexception
+        }
+
         Sprite newSprite = this.art.getSprite(artName);
 
         if (this.art != null) {

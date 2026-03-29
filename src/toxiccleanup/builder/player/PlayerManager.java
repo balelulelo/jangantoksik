@@ -8,6 +8,7 @@ import toxiccleanup.engine.game.Positionable;
 import toxiccleanup.engine.renderer.Renderable;
 import toxiccleanup.engine.timing.RepeatingTimer;
 import toxiccleanup.engine.timing.TickTimer;
+import toxiccleanup.engine.renderer.Dimensions;
 
 import java.util.List;
 
@@ -45,7 +46,6 @@ public class PlayerManager implements Player {
      * @param position the pixel position at which to spawn the {@link Cleaner} entity.
      * @requires the position to be a valid position within the game window
      * (x and y &ge; 0 and &le; window size).
-     *
      * @provided
      */
     public PlayerManager(Positionable position) {
@@ -93,28 +93,33 @@ public class PlayerManager implements Player {
      * @param state the current state of the toxiccleanup.engine.
      * @param game  the current state of the game.
      * @ensures player moves within the game window boundaries, and only if alive.
-     *
      * @provided
      * @stage0
      * @stage3
      */
     @Override
     public void tick(EngineState state, GameState game) {
-        if(!isAlive()){
+        movementTimer.tick();
+
+        int steps = state.getDimensions().tileSize();
+        if (!isAlive()) {
             this.player.setDeadSprite();
             return;
-
-        }
-        if(state.getKeys().isDown('w')){
-            player.move(Direction.NORTH, 1);
-        } else if (state.getKeys().isDown('s')) {
-            player.move(Direction.SOUTH, 1);
-        } else if (state.getKeys().isDown('a')) {
-            player.move(Direction.WEST, 1);
-        } else if (state.getKeys().isDown('d')) {
-            player.move(Direction.EAST, 1);
         }
 
+        //move ONLY when the interval timer is done
+        if (movementTimer.isFinished()) {
+
+            if (state.getKeys().isDown('w')) {
+                player.move(Direction.NORTH, steps);
+            } else if (state.getKeys().isDown('s')) {
+                player.move(Direction.SOUTH, steps);
+            } else if (state.getKeys().isDown('a')) {
+                player.move(Direction.WEST, steps);
+            } else if (state.getKeys().isDown('d')) {
+                player.move(Direction.EAST, steps);
+            }
+        }
     }
 
     /**
@@ -123,7 +128,6 @@ public class PlayerManager implements Player {
      * {@link #tick} to decide whether to show the dead sprite and skip movement.
      *
      * @return {@code true} if the player's HP is greater than 0; {@code false} if HP is 0.
-     *
      * @provided
      */
     public boolean isAlive() {
@@ -186,7 +190,6 @@ public class PlayerManager implements Player {
      * the cleaner, which the toxiccleanup.engine draws at the cleaner's current pixel position.
      *
      * @return a single-element list containing the {@link Cleaner} entity to be rendered.
-     *
      * @provided
      */
     @Override

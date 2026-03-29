@@ -18,7 +18,7 @@ public class ToxicWorld implements RenderableGroup, Tickable, World {
     private List<Tile> tiles;
 
     public ToxicWorld(){
-        this.tiles = tiles;
+        this.tiles = new ArrayList<>();
     }
 
     public List<Tile> tilesAtPosition(Positionable position, Dimensions dimensions){
@@ -48,7 +48,7 @@ public class ToxicWorld implements RenderableGroup, Tickable, World {
     }
     @Override
     public List<Tile> allTiles(){
-        return new ArrayList<>();
+        return new ArrayList<>(this.tiles);
     }
     @Override
     public void place(Tile tile){

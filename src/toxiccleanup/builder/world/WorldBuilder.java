@@ -18,18 +18,32 @@ public class WorldBuilder {
         List<Tile> tiles = new ArrayList<>();
         String[] lines = text.split("\n");
 
-        for(int rows = 0; rows < lines.length; rows++){
-            String line = new lines[rows];
-            for(int cols = 0; cols < line.length(); cols++){
-                char symbol = line.charAt(cols);
+        int lineNum = dimensions.windowSize() / dimensions.tileSize();
 
-                Position position = new Position(cols*16, rows*16);
+        // validate length of line (lineNum)
+        if(lines.length != lineNum){
+            throw new WorldLoadException("Invalid number of lines. Expected " + lineNum);
+        }
 
-                try{
-                    tiles.add(TileFactory.fromSymbol(position, symbol));
-                } catch(IllegalArgumentException exception){
-                    throw new WorldLoadException("Invalid map symbol: " + symbol);
+        for(int rows = 0; rows < lineNum; rows++){
+            String line = lines[rows];
+
+            if (lines.length == lineNum) {
+                for (int cols = 0; cols < line.length(); cols++) {
+                    char symbol = line.charAt(cols);
+
+                    int pixelX = dimensions.tileToPixel(cols);
+                    int pixelY = dimensions.tileToPixel(rows);
+                    Position position = new Position(pixelX, pixelY);
+
+                    try {
+                        tiles.add(TileFactory.fromSymbol(position, symbol));
+                    } catch (IllegalArgumentException exception) {
+                        throw new WorldLoadException("Invalid map symbol: " + symbol);
+                    }
                 }
+            } else {
+                throw new WorldLoadException("Invalid line length at row " + rows);
             }
         }
         return tiles;
@@ -42,7 +56,12 @@ public class WorldBuilder {
     }
 
     public static ToxicWorld fromTiles(List<Tile> tiles){
-        return new ToxicWorld(tiles);
+        ToxicWorld toxicWorld = new ToxicWorld();
+
+        for(int i = tiles.size() - 1; i >= 0; i--){
+            toxicWorld.place(tiles.get(i));
+        }
+        return toxicWorld;
     }
 
 }
