@@ -54,7 +54,7 @@ public class GuiManager implements Overlay {
         if (timerDisplay == null){
             int x = tileSize / 2;
             int y = windowSize - (tileSize / 2);
-            int spacing = 40;
+            int spacing = tileSize;
             timerDisplay = new Text(this.timer, x, y, spacing);
         } else{
             timerDisplay.update(this.timer);
