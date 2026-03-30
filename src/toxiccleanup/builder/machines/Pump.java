@@ -1,6 +1,10 @@
 package toxiccleanup.builder.machines;
 
+import toxiccleanup.builder.GameState;
 import toxiccleanup.builder.SpriteGallery;
+import toxiccleanup.builder.entities.GameEntity;
+import toxiccleanup.engine.EngineState;
+import toxiccleanup.engine.game.Positionable;
 
 /**
  * A {@link Pump} is a machine that removes toxicity from a {toxiccleanup.builder.entities.tiles.ToxicField}
@@ -21,6 +25,25 @@ import toxiccleanup.builder.SpriteGallery;
  * @provided
  * @stage3
  */
-public class Pump {
+public class Pump extends GameEntity implements Powered {
+    public static final int COST = 5;
+    private Adjustable pumpTarget;
+    // 100 ticks for pump timer, and 4 ticks for the pump animation
+    private int pumpTimer = 100;
+    private int spriteAnimation = 4;
 
+    public Pump(Positionable position, Adjustable pumpTarget){
+        super(position);
+        this.setSprite(SpriteGallery.pump.getSprite("default"));
+    }
+
+    @Override
+    public void tick(EngineState state, GameState game) {
+        super.tick(state, game);
+    }
+
+    @Override
+    public int getPowerRequirement() {
+        return 0;
+    }
 }

@@ -79,7 +79,7 @@ public class Dirt extends Tile implements PlayerOverHook, Tickable, RenderableGr
             if (state.getMouse().isRightPressed()) {
                 attemptSpawnTeleporter(game.getMachines());
             }
-        }
-        playerOver(state, game);
+        } // I called playerOver again below here previously. that's what caused the
+        // stack overflow
     }
 }
