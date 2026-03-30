@@ -1,6 +1,10 @@
 package toxiccleanup.builder.machines;
 
+import toxiccleanup.builder.GameState;
 import toxiccleanup.builder.SpriteGallery;
+import toxiccleanup.builder.entities.GameEntity;
+import toxiccleanup.engine.EngineState;
+import toxiccleanup.engine.game.Positionable;
 
 /**
  * A {@link SolarPanel} is a machine that passively generates power for the game's shared power
@@ -16,6 +20,30 @@ import toxiccleanup.builder.SpriteGallery;
  * @provided
  * @stage3
  */
-public class SolarPanel {
+public class SolarPanel extends GameEntity {
+    // timer is 120 frames
+    private int timer = 120;
+    public static final int COST = 3;
 
+    public SolarPanel(Positionable position){
+        super(position);
+        this.setSprite(SpriteGallery.solarPanel.getSprite("default"));
+        this.timer = timer;
+    }
+
+    @Override
+    public void tick(EngineState state, GameState game) {
+        super.tick(state, game);
+        // each frame, reduce the timer
+        timer--;
+
+        if(timer <= 0){
+            // every 120 ticks, adds 1 power to machine power
+            game.getMachines().adjust(1);
+            // after that, resets the timer afterwards
+            timer = 120;
+        }
+
+
+    }
 }

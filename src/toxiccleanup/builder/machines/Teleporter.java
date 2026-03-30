@@ -1,6 +1,11 @@
 package toxiccleanup.builder.machines;
 
+import toxiccleanup.builder.GameState;
 import toxiccleanup.builder.SpriteGallery;
+import toxiccleanup.builder.entities.GameEntity;
+import toxiccleanup.builder.entities.PlayerOverHook;
+import toxiccleanup.engine.EngineState;
+import toxiccleanup.engine.game.Positionable;
 
 /**
  * A {@link Teleporter} is a machine that allows the player to instantly travel between teleporter
@@ -19,6 +24,26 @@ import toxiccleanup.builder.SpriteGallery;
  * @provided
  * @stage3
  */
-public class Teleporter {
+public class Teleporter extends GameEntity implements PlayerOverHook, Powered {
+    public static final int COST = 2;
 
+    public Teleporter(Positionable position){
+        super(position);
+        this.setSprite(SpriteGallery.teleporter.getSprite("default"));
+    }
+
+    @Override
+    public void tick(EngineState state, GameState game) {
+        super.tick(state, game);
+    }
+
+    @Override
+    public int getPowerRequirement() {
+        return 0;
+    }
+
+    @Override
+    public void playerOver(EngineState state, GameState game) {
+
+    }
 }

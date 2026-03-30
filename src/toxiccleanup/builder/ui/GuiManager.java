@@ -51,12 +51,12 @@ public class GuiManager implements Overlay {
         this.timer = String.format("%d %02d", minuteTicks, secondsRemains);
 
         // this one is for printing the timer into the display
-        if (timerDisplay == null){
+        if (timerDisplay == null) {
             int x = tileSize / 2;
             int y = windowSize - (tileSize / 2);
             int spacing = tileSize;
             timerDisplay = new Text(this.timer, x, y, spacing);
-        } else{
+        } else {
             timerDisplay.update(this.timer);
         }
 
@@ -103,7 +103,7 @@ public class GuiManager implements Overlay {
     public List<Renderable> render() {
         List<Renderable> renderables = new ArrayList<>(displayHuds);
 
-        if (timerDisplay != null){
+        if (timerDisplay != null) {
             renderables.addAll(this.timerDisplay.render());
         }
         return renderables;

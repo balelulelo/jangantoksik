@@ -19,7 +19,7 @@ public class MachinesManager implements Machines{
 
     @Override
     public boolean hasRequiredPower(int powerRequirement) {
-        return false;
+        return power >= powerRequirement;
     }
 
     @Override
@@ -29,25 +29,31 @@ public class MachinesManager implements Machines{
 
     @Override
     public void setPower(int value) {
-
+        power = Math.clamp(value, 0, getMaxPower());
     }
 
     @Override
     public int getMaxPower() {
-        return 0;
+        return 14;
     }
 
     @Override
     public void adjust(int amount) {
         // calculates the power and limit it minimum 0 and maximum 14 (clamp)
         // (current value, min, max)
-        power = Math.clamp(power - amount, 0, 14);
+        power = Math.clamp(power + amount, 0, getMaxPower());
     }
 
     // from this line below, only edit later at stage 3 ============
     @Override
     public SolarPanel spawnSolarPanel(Positionable position) {
-        return null;
+        // solar panel costs 3 power to use
+        if(hasRequiredPower(SolarPanel.COST)){
+            adjust(-SolarPanel.COST);
+            return new SolarPanel(position);
+        } else{
+            return null;
+        }
     }
 
     @Override
