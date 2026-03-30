@@ -2,9 +2,12 @@ package toxiccleanup.builder.machines;
 
 import toxiccleanup.builder.GameState;
 import toxiccleanup.builder.SpriteGallery;
+import toxiccleanup.builder.Tickable;
 import toxiccleanup.builder.entities.GameEntity;
 import toxiccleanup.engine.EngineState;
+import toxiccleanup.engine.game.HasTick;
 import toxiccleanup.engine.game.Positionable;
+import toxiccleanup.engine.renderer.Renderable;
 
 /**
  * A {@link SolarPanel} is a machine that passively generates power for the game's shared power
@@ -20,7 +23,7 @@ import toxiccleanup.engine.game.Positionable;
  * @provided
  * @stage3
  */
-public class SolarPanel extends GameEntity {
+public class SolarPanel extends GameEntity{
     // timer is 120 frames
     private int timer = 120;
     public static final int COST = 3;

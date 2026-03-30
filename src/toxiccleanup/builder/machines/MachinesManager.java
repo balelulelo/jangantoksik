@@ -41,7 +41,8 @@ public class MachinesManager implements Machines{
     public void adjust(int amount) {
         // calculates the power and limit it minimum 0 and maximum 14 (clamp)
         // (current value, min, max)
-        power = Math.clamp(power + amount, 0, getMaxPower());
+        // if adding a power (+), when building an object (- in amount)
+        power = Math.clamp(this.power + amount, 0, getMaxPower());
     }
 
     // from this line below, only edit later at stage 3 ============

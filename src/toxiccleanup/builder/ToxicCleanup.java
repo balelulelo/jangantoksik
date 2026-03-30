@@ -13,6 +13,7 @@ import toxiccleanup.engine.game.Position;
 import toxiccleanup.engine.game.Positionable;
 import toxiccleanup.engine.renderer.Dimensions;
 import toxiccleanup.engine.renderer.Renderable;
+import toxiccleanup.builder.entities.tiles.Tile;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -110,15 +111,25 @@ public class ToxicCleanup implements Game {
     public void tick(EngineState engine) {
         GameState state = new ToxicCleanupGameState(this.world, this.player, this.machine);
         // runs the timer, power, and hp  UI
-        this.gui.tick(engine,state);
+        this.gui.tick(engine, state);
+        this.world.tick(engine, state);
+
+        // get the tile exactly below player and using a method from world
+        List<Tile> currentTiles = world.tilesAtPosition(player.getPosition(), engine.getDimensions());
+        // call playerOver for each tile / entity in that place
+        for (Tile currentTile : currentTiles) {
+            if (currentTile != null) {
+                currentTile.playerOver(engine, state);
+            }
+        }
 
         // if player's hp drops below 0, set game as lose and print message
-        if (!player.isAlive()){
+        if (!player.isAlive()) {
             this.gui.lose(engine);
         }
         // updates both player and the world
-        this.world.tick(engine, state);
         this.player.tick(engine, state);
+
 
     }
 
