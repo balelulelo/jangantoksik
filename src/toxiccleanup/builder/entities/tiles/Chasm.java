@@ -37,10 +37,11 @@ public class Chasm extends Tile implements PlayerOverHook {
     }
     @Override
     public void playerOver(EngineState engine, GameState game){
-        super.playerOver(engine, game);
-        if(fallable){
-            game.getPlayer().adjust(1);
-        }
+//        super.playerOver(engine, game);
+//        if(fallable){
+//            game.getPlayer().adjust(1);
+//        }
+// I'll turn this off for now (so I don't keep dying)
     }
 
 }

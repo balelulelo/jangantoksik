@@ -69,6 +69,11 @@ public class MachinesManager implements Machines{
 
     @Override
     public Pump spawnPump(Positionable position, Adjustable adjustable) {
+        // pump costs 5 power to use
+        if(hasRequiredPower(Pump.COST)){
+            adjust(-Pump.COST);
+            return new Pump(position, adjustable);
+        }
         return null;
     }
 }

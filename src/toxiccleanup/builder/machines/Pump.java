@@ -31,19 +31,42 @@ public class Pump extends GameEntity implements Powered {
     // 100 ticks for pump timer, and 4 ticks for the pump animation
     private int pumpTimer = 100;
     private int spriteAnimation = 4;
+    private int frame = 1;
 
-    public Pump(Positionable position, Adjustable pumpTarget){
+    public Pump(Positionable position, Adjustable pumpTarget) {
         super(position);
-        this.setSprite(SpriteGallery.pump.getSprite("default"));
+        this.pumpTarget = pumpTarget;
+        this.setSprite(SpriteGallery.pump.getSprite("1"));
     }
 
     @Override
     public void tick(EngineState state, GameState game) {
         super.tick(state, game);
+        // pump can only be used if power more than / is 2
+        if (game.getMachines().getPower() >= getPowerRequirement()) {
+
+            // ====== Animation ======
+            spriteAnimation--;
+            if (spriteAnimation <= 0) {
+                frame = (frame % 8) + 1;
+                // get the sprite of pump from 1 until 10
+                setSprite(SpriteGallery.pump.getSprite(String.valueOf(frame)));
+                // every 4 ticks (4 -> 3 -> 2 -> 1 -> 0 (start animating))
+                spriteAnimation = 4;
+            }
+
+            pumpTimer--;
+            // if pumpTimer reaches 0, reduces the toxic target, and resets the timer to 100 ticks
+            if (pumpTimer <= 0) {
+                pumpTarget.adjust(1);
+                pumpTimer = 100;
+            }
+        }
     }
 
     @Override
     public int getPowerRequirement() {
-        return 0;
+        // the power required to use pump is 2
+        return 2;
     }
 }
