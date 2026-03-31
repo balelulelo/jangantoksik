@@ -4,16 +4,18 @@ import toxiccleanup.engine.game.Positionable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
-public class MachinesManager implements Machines{
+public class MachinesManager implements Machines {
     private int power = 14;
     private List<Positionable> teleporter = new ArrayList<>();
 
-    public MachinesManager(){
+    public MachinesManager() {
         // calls the constructor below with power of 14 as default
         this(14);
     }
-    public MachinesManager(int power){
+
+    public MachinesManager(int power) {
         this.power = Math.clamp(power, 0, 14);
     }
 
@@ -49,28 +51,47 @@ public class MachinesManager implements Machines{
     @Override
     public SolarPanel spawnSolarPanel(Positionable position) {
         // solar panel costs 3 power to use
-        if(hasRequiredPower(SolarPanel.COST)){
+        if (hasRequiredPower(SolarPanel.COST)) {
             adjust(-SolarPanel.COST);
             return new SolarPanel(position);
-        } else{
+        } else {
             return null;
         }
     }
 
     @Override
     public Teleporter spawnTeleporter(Positionable position) {
-        return null;
+
+        if (hasRequiredPower(Teleporter.COST)) {
+            adjust(-Teleporter.COST);
+            // "records the teleporter's position for future"
+            teleporter.add(position);
+            return new Teleporter(position);
+        } else {
+            return null;
+        }
     }
 
     @Override
     public Positionable getNextTeleporterPosition(Positionable excludedPosition) {
-        return null;
+        // can't teleport because no teleporter available if less than 1
+        if (teleporter.size() <= 1) {
+            return null;
+        }
+        // saves all possible destinations except excludedPosition
+        List<Positionable> destinations = new ArrayList<>(teleporter);
+        destinations.remove(excludedPosition);
+
+        // generates random numbers for teleporter location
+        Random random = new Random();
+        int randomLocation = random.nextInt(destinations.size());
+        return destinations.get(randomLocation);
     }
 
     @Override
     public Pump spawnPump(Positionable position, Adjustable adjustable) {
         // pump costs 5 power to use
-        if(hasRequiredPower(Pump.COST)){
+        if (hasRequiredPower(Pump.COST)) {
             adjust(-Pump.COST);
             return new Pump(position, adjustable);
         }

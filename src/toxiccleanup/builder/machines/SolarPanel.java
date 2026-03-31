@@ -23,12 +23,12 @@ import toxiccleanup.engine.renderer.Renderable;
  * @provided
  * @stage3
  */
-public class SolarPanel extends GameEntity{
+public class SolarPanel extends GameEntity {
     // timer is 120 frames
     private int timer = 120;
     public static final int COST = 3;
 
-    public SolarPanel(Positionable position){
+    public SolarPanel(Positionable position) {
         super(position);
         this.setSprite(SpriteGallery.solarPanel.getSprite("default"));
         this.timer = timer;
@@ -40,7 +40,7 @@ public class SolarPanel extends GameEntity{
         // each frame, reduce the timer
         timer--;
 
-        if(timer <= 0){
+        if (timer <= 0) {
             // every 120 ticks, adds 1 power to machine power
             game.getMachines().adjust(1);
             // after that, resets the timer afterwards

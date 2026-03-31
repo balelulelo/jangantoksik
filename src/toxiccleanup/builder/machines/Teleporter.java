@@ -26,24 +26,48 @@ import toxiccleanup.engine.game.Positionable;
  */
 public class Teleporter extends GameEntity implements PlayerOverHook, Powered {
     public static final int COST = 2;
+    // cycles sprite animation every 12 ticks
+    private int spriteAnimation = 12;
+    private int frame = 1;
 
-    public Teleporter(Positionable position){
+    public Teleporter(Positionable position) {
         super(position);
-        this.setSprite(SpriteGallery.teleporter.getSprite("default"));
+        this.setSprite(SpriteGallery.teleporter.getSprite("1"));
     }
 
     @Override
     public void tick(EngineState state, GameState game) {
         super.tick(state, game);
+
+        if (game.getMachines().getPower() >= getPowerRequirement()) {
+            spriteAnimation--;
+            if (spriteAnimation <= 0) {
+                frame = (frame % 7) + 1;
+                // get the sprite of pump from 1 until 8
+                setSprite(SpriteGallery.teleporter.getSprite(String.valueOf(frame)));
+                // every 12 ticks (12 -> 11 -> 11 -> ... -> 0 (start animating))
+                spriteAnimation = 12;
+            }
+
+        }
+
     }
 
     @Override
     public int getPowerRequirement() {
-        return 0;
+        return COST;
     }
 
     @Override
     public void playerOver(EngineState state, GameState game) {
+        // if player has the required power (at least 2) and "E" button is pressed
+        if ((game.getMachines().getPower() >= getPowerRequirement()) && state.getKeys().isDown('e')) {
+            Positionable position = game.getMachines().getNextTeleporterPosition(getPosition());
 
+            // move the player to another teleporter destination
+            if (position != null) {
+                game.getPlayer().setPosition(position);
+            }
+        }
     }
 }

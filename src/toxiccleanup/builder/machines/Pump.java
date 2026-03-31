@@ -48,7 +48,7 @@ public class Pump extends GameEntity implements Powered {
             // ====== Animation ======
             spriteAnimation--;
             if (spriteAnimation <= 0) {
-                frame = (frame % 8) + 1;
+                frame = (frame % 10) + 1;
                 // get the sprite of pump from 1 until 10
                 setSprite(SpriteGallery.pump.getSprite(String.valueOf(frame)));
                 // every 4 ticks (4 -> 3 -> 2 -> 1 -> 0 (start animating))
@@ -67,6 +67,6 @@ public class Pump extends GameEntity implements Powered {
     @Override
     public int getPowerRequirement() {
         // the power required to use pump is 2
-        return 2;
+        return COST;
     }
 }

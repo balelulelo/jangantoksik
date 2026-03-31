@@ -20,7 +20,7 @@ public class ToxicField extends Tile implements Adjustable {
     @Override
     public void adjust(int amount) {
         // reduces the toxicity
-        this.toxicity = Math.max(0, this.toxicity - amount);s
+        this.toxicity = Math.max(0, this.toxicity - amount);
         // the toxicity amount handling
         updateVisuals();
         // delete the pump if the toxic field is already clean
