@@ -34,6 +34,7 @@ public class ToxicCleanup implements Game {
     private ToxicWorld world;
     private MachinesManager machine;
     private GuiManager gui;
+    private int dmgTime;
 
 
     /**
@@ -76,6 +77,7 @@ public class ToxicCleanup implements Game {
         this.machine = new MachinesManager();
         this.gui = new GuiManager();
 
+
     }
 
     /**
@@ -111,11 +113,12 @@ public class ToxicCleanup implements Game {
     public void tick(EngineState engine) {
         GameState state = new ToxicCleanupGameState(this.world, this.player, this.machine);
 
+        // ====== Player and Tile ======
 
         // get the tile exactly below player and using a method from world
         List<Tile> tiles = world.tilesAtPosition(player.getPosition(), engine.getDimensions());
         // call playerOver for each tile / entity in that place
-        if(!tiles.isEmpty()){
+        if (!tiles.isEmpty()) {
             // get the top most tile (0 is the first index of the tile)
             tiles.get(0).playerOver(engine, state);
         }
@@ -123,6 +126,33 @@ public class ToxicCleanup implements Game {
         // if player's hp drops below 0, set game as lose and print message
         if (!player.isAlive()) {
             this.gui.lose(engine);
+        }
+
+        // ====== Damage Over Time ======
+
+        // if there still a toxic field, the damage timer will increase
+        if (world.isToxic()) {
+            dmgTime++;
+            // deal 1 damage every 1800 tick
+            if (dmgTime >= 1800) {
+                // amount is 1 because adjust in PlayerManager does (hp -= amount))
+                player.adjust(1);
+                // reset the timer to 0 again after dealing 1 damage
+                dmgTime = 0;
+            }
+        } else {
+            // if the world is not toxic anymore. set the timer to 0
+            dmgTime = 0;
+        }
+
+        // ====== Win Lose ======
+        // if the world is not toxic anymore (all toxic field are cleaned up), they win
+        if (!world.isToxic()) {
+            gui.win(engine);
+        }
+        // if the player is dead, they lost
+        if (!player.isAlive()) {
+            gui.lose(engine);
         }
         // updates the player, gui, and world
         this.gui.tick(engine, state);
