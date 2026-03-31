@@ -77,6 +77,14 @@ public class ToxicCleanup implements Game {
         this.machine = new MachinesManager();
         this.gui = new GuiManager();
 
+        // starter teleporter logic
+        Teleporter starterTeleporter = new Teleporter(starterTeleporterPosition);
+        List<Tile> tiles = world.tilesAtPosition(starterTeleporterPosition, dimensions);
+
+        if (!tiles.isEmpty()) {
+            tiles.get(0).placeOn(starterTeleporter);
+            machine.spawnTeleporter(starterTeleporterPosition);
+        }
 
     }
 
@@ -113,6 +121,11 @@ public class ToxicCleanup implements Game {
     public void tick(EngineState engine) {
         GameState state = new ToxicCleanupGameState(this.world, this.player, this.machine);
 
+        // updates the player, gui, and world
+        this.world.tick(engine, state);
+        this.player.tick(engine, state);
+        this.gui.tick(engine, state);
+
         // ====== Player and Tile ======
 
         // get the tile exactly below player and using a method from world
@@ -121,11 +134,6 @@ public class ToxicCleanup implements Game {
         if (!tiles.isEmpty()) {
             // get the top most tile (0 is the first index of the tile)
             tiles.get(0).playerOver(engine, state);
-        }
-
-        // if player's hp drops below 0, set game as lose and print message
-        if (!player.isAlive()) {
-            this.gui.lose(engine);
         }
 
         // ====== Damage Over Time ======
@@ -154,10 +162,6 @@ public class ToxicCleanup implements Game {
         if (!player.isAlive()) {
             gui.lose(engine);
         }
-        // updates the player, gui, and world
-        this.gui.tick(engine, state);
-        this.world.tick(engine, state);
-        this.player.tick(engine, state);
 
 
     }

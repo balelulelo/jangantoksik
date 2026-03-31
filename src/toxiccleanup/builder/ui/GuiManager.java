@@ -1,11 +1,9 @@
 package toxiccleanup.builder.ui;
 
 import toxiccleanup.builder.GameState;
-import toxiccleanup.engine.Engine;
 import toxiccleanup.engine.EngineState;
 import toxiccleanup.engine.game.Position;
 import toxiccleanup.engine.renderer.Renderable;
-import toxiccleanup.engine.ui.Letter;
 import toxiccleanup.engine.ui.Text;
 
 import java.util.ArrayList;
@@ -15,14 +13,14 @@ public class GuiManager implements Overlay {
     private int gameplayTicks = 18000;
     private List<Renderable> displayHuds = new ArrayList<>();
     private String timer = "";
-    private String statusMessage = null;
+    private Text gameStatus;
     private Text timerDisplay;
 
     public GuiManager() {
         this.gameplayTicks = gameplayTicks;
         this.displayHuds = displayHuds;
         this.timer = timer;
-        this.statusMessage = statusMessage;
+        this.gameStatus = gameStatus;
         this.timerDisplay = timerDisplay;
     }
 
@@ -93,18 +91,29 @@ public class GuiManager implements Overlay {
     }
 
     public void win(EngineState state) {
-        statusMessage = "YOU WIN";
+        String statusMessage = "YOU WIN";
+        int tileSize = state.getDimensions().tileSize();
+        int windowSize = state.getDimensions().windowSize();
+        gameStatus = new Text(statusMessage, windowSize / 2, windowSize / 2, tileSize);
     }
 
     public void lose(EngineState state) {
-        statusMessage = "GAME OVER";
+        String statusMessage = "GAME OVER";
+        int tileSize = state.getDimensions().tileSize();
+        int windowSize = state.getDimensions().windowSize();
+        gameStatus = new Text(statusMessage, windowSize / 2, windowSize / 2, tileSize);
     }
+
 
     public List<Renderable> render() {
         List<Renderable> renderables = new ArrayList<>(displayHuds);
-
+        // timer renderer
         if (timerDisplay != null) {
             renderables.addAll(this.timerDisplay.render());
+        }
+        //  win / lose renderer
+        if (gameStatus != null) {
+            renderables.addAll(this.gameStatus.render());
         }
         return renderables;
     }
