@@ -101,7 +101,11 @@ public class PlayerManager implements Player {
     public void tick(EngineState state, GameState game) {
         movementTimer.tick();
 
-        int steps = state.getDimensions().tileSize();
+        // save window size and tile size
+        int windowSize = state.getDimensions().windowSize();
+        int tileSize = state.getDimensions().tileSize();
+        int halfTile = tileSize / 2;
+
         if (!isAlive()) {
             this.player.setDeadSprite();
             return;
@@ -111,15 +115,30 @@ public class PlayerManager implements Player {
         if (movementTimer.isFinished()) {
 
             if (state.getKeys().isDown('w')) {
-                player.move(Direction.NORTH, steps);
+                player.move(Direction.NORTH, tileSize);
             } else if (state.getKeys().isDown('s')) {
-                player.move(Direction.SOUTH, steps);
+                player.move(Direction.SOUTH, tileSize);
             } else if (state.getKeys().isDown('a')) {
-                player.move(Direction.WEST, steps);
+                player.move(Direction.WEST, tileSize);
             } else if (state.getKeys().isDown('d')) {
-                player.move(Direction.EAST, steps);
+                player.move(Direction.EAST, tileSize);
             }
         }
+
+        // set the min and max interval for the boundary. half tile is used in order
+        // for the player to stop in the center of the edge tile.
+        int minInterval = halfTile; // left and top side
+        int maxInterval = windowSize - halfTile; // right and bottom side
+
+        // set the boundary for player walkable area inside 0 -> window size
+        int boundaryX = Math.clamp(player.getX(), minInterval, maxInterval);
+        int boundaryY = Math.clamp(player.getY(), minInterval, maxInterval);
+
+        // set the player position according to the boundaries so their movement will
+        // be limited inside the given boundary
+        Position playerPosition = new Position(boundaryX, boundaryY);
+        setPosition(playerPosition);
+
     }
 
     /**
