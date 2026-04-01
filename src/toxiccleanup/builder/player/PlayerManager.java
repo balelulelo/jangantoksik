@@ -104,7 +104,6 @@ public class PlayerManager implements Player {
         // save window size and tile size
         int windowSize = state.getDimensions().windowSize();
         int tileSize = state.getDimensions().tileSize();
-        int halfTile = tileSize / 2;
 
         if (!isAlive()) {
             this.player.setDeadSprite();
@@ -127,8 +126,8 @@ public class PlayerManager implements Player {
 
         // set the min and max interval for the boundary. half tile is used in order
         // for the player to stop in the center of the edge tile.
-        int minInterval = halfTile; // left and top side
-        int maxInterval = windowSize - halfTile; // right and bottom side
+        int minInterval = tileSize / 2; // left and top side
+        int maxInterval = windowSize - minInterval; // right and bottom side
 
         // set the boundary for player walkable area inside 0 -> window size
         int boundaryX = Math.clamp(player.getX(), minInterval, maxInterval);
