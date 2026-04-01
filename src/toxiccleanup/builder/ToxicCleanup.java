@@ -153,7 +153,7 @@ public class ToxicCleanup implements Game {
         // updates the player, gui, and world
         this.player.tick(engine, state);
         this.world.tick(engine, state);
-        this.gui.tick(engine, state);
+
 
         // ====== Player and Tile ======
         // get the tile exactly below player and using a method from world
@@ -164,6 +164,10 @@ public class ToxicCleanup implements Game {
             // get the top most tile (0 is the first index of the tile)
             tiles.get(0).playerOver(engine, state);
         }
+
+        // moved the gui update here to solve the issue where after death,
+        // the hp meter is not updated correctly
+        this.gui.tick(engine, state);
 
         // ====== Damage Over Time ======
 
