@@ -26,13 +26,22 @@ import toxiccleanup.engine.game.Positionable;
  * @stage3
  */
 public class Pump extends GameEntity implements Powered {
+    /** power cost required to operate pump. */
     public static final int COST = 5;
+    /** target field to be cleaned */
     private Adjustable pumpTarget;
     // 100 ticks for pump timer, and 4 ticks for the pump animation
     private int pumpTimer = 100;
     private int spriteAnimation = 4;
     private int frame = 1;
 
+    /**
+     * constructs a pump at the given position.
+     *
+     * @param position the pixel position
+     * @param pumpTarget the field to clean
+     *
+     */
     public Pump(Positionable position, Adjustable pumpTarget) {
         super(position);
         this.pumpTarget = pumpTarget;

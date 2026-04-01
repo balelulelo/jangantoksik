@@ -46,9 +46,17 @@ import java.util.List;
  */
 public abstract class Tile extends GameEntity implements PlayerOverHook, RenderableGroup, HasTick {
     private SpriteGroup art;
+    /** list of game entities placed on top of the tile */
     private List<GameEntity> stackedEntities;
 
-    // Constructor
+    /**
+     * constructs a tile with specific position and art group
+     *
+     * @param position the pixel position of the tile
+     * @param art sprite group for the tile variants
+     *
+     */
+
     public Tile(Positionable position, SpriteGroup art) {
         super(position);
         // pre condition:
@@ -59,17 +67,38 @@ public abstract class Tile extends GameEntity implements PlayerOverHook, Rendera
         this.stackedEntities = new ArrayList<>();
     }
 
+    /**
+     * constructs a tile without an initial art group.
+     *
+     * @param position pixel position of the tile.
+     *
+     */
+
     public Tile(Positionable position) {
         this(position, null);
     }
+
+    /**
+     * sets a new art group for the tile.
+     *
+     * @param art the new sprite group
+     *
+     */
 
     public void setArt(SpriteGroup art) {
         this.art = art;
     }
 
+    /**
+     * updates the current tile's sprite to a named sprite from its group
+     *
+     * @param artName the name of the sprite to use
+     * @throws ArtNotFoundException if the art group is missing or invalid
+     */
+
     public void updateSprite(String artName) throws ArtNotFoundException {
         if (this.art == null) {
-            return; // validation, since i got a nullpoint  erexception
+            return; // validation, since I got a "nullpointerexception"
         }
 
         Sprite newSprite = this.art.getSprite(artName);
@@ -90,10 +119,22 @@ public abstract class Tile extends GameEntity implements PlayerOverHook, Rendera
         }
     }
 
+    /**
+     * returns a copy of the entities currently stacked on this tile
+     *
+     * @return a list of stacked GameEntity objects.
+     *
+     */
     public List<GameEntity> getStackedEntities() {
         return new ArrayList<>(stackedEntities);
     }
 
+    /**
+     * retrieves all stacked entities that implement PlayerOverhook interface
+     *
+     * @return list of entities that can react to player standing on them
+     *
+     */
     public List<PlayerOverHook> getStackedEntitiesWithPlayerOverHook() {
         List<PlayerOverHook> hooks = new ArrayList<>();
         for (GameEntity entity : stackedEntities) {
@@ -104,6 +145,12 @@ public abstract class Tile extends GameEntity implements PlayerOverHook, Rendera
         return hooks;
     }
 
+    /**
+     * places a new entity on top of the tile
+     *
+     * @param tile the entity to be placed
+     *
+     */
     public void placeOn(GameEntity tile) {
         if (tile != null) {
             stackedEntities.add(tile);

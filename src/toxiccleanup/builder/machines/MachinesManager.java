@@ -6,15 +6,29 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * manages the placement and power consumption of game machines.
+ */
+
 public class MachinesManager implements Machines {
+    /** current power level of the machine system. */
     private int power = 14;
+    /** the positions of all active teleporters. */
     private List<Positionable> teleporter = new ArrayList<>();
 
+    /**
+     * constructs a machines manager with the default power of 14
+     */
     public MachinesManager() {
         // calls the constructor below with power of 14 as default
         this(14);
     }
 
+    /**
+     * constructs a machines manager with a specific initial power
+     *
+     * @param power starting power lever
+     */
     public MachinesManager(int power) {
         this.power = Math.clamp(power, 0, 14);
     }

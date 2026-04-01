@@ -14,32 +14,56 @@ import java.io.IOException;
  */
 public class SpriteGallery {
 
-    /** Sprite group for grass tiles. */
+    /**
+     * Sprite group for grass tiles.
+     */
     public static final SpriteGroup grass = load("Grass", "grass");
-    /** Sprite group for dirt tiles. */
+    /**
+     * Sprite group for dirt tiles.
+     */
     public static final SpriteGroup dirt = load("Dirt", "dirt");
-    /** Sprite group for paved tiles. */
+    /**
+     * Sprite group for paved tiles.
+     */
     public static final SpriteGroup paved = load("Paved", "paved");
-    /** Sprite group for toxic field tiles. */
+    /**
+     * Sprite group for toxic field tiles.
+     */
     public static final SpriteGroup toxicField = load("ToxicField", "toxicField");
-    /** Sprite group for chasm tiles. */
+    /**
+     * Sprite group for chasm tiles.
+     */
     public static final SpriteGroup chasm = load("Chasm", "chasm");
 
-    /** Sprite group for the power bar UI element. */
+    /**
+     * Sprite group for the power bar UI element.
+     */
     public static final SpriteGroup power = load("Power", "power");
-    /** Sprite group for letter/text UI elements. */
+    /**
+     * Sprite group for letter/text UI elements.
+     */
     public static final SpriteGroup letters = load("Letters", "letter");
-    /** Sprite group for the heart/HP UI element. */
+    /**
+     * Sprite group for the heart/HP UI element.
+     */
     public static final SpriteGroup heart = load("Heart", "heart");
 
-    /** Sprite group for the player character (cleaner). */
+    /**
+     * Sprite group for the player character (cleaner).
+     */
     public static final SpriteGroup cleaner = load("Cleaner", "cleaner");
 
-    /** Sprite group for the solar panel machine. */
+    /**
+     * Sprite group for the solar panel machine.
+     */
     public static final SpriteGroup solarPanel = load("SolarPanel", "solarPanel");
-    /** Sprite group for the pump machine. */
+    /**
+     * Sprite group for the pump machine.
+     */
     public static final SpriteGroup pump = load("Pump", "pump");
-    /** Sprite group for the teleporter machine. */
+    /**
+     * Sprite group for the teleporter machine.
+     */
     public static final SpriteGroup teleporter = load("Teleporter", "teleporter");
 
     private SpriteGallery() {
@@ -62,7 +86,4 @@ public class SpriteGallery {
             throw new RuntimeException(e);
         }
     }
-//
-//    public static SpriteGroup getSprite(String artName) {
-//    }
 }

@@ -5,32 +5,57 @@ import toxiccleanup.builder.player.Player;
 import toxiccleanup.builder.player.PlayerManager;
 import toxiccleanup.builder.world.World;
 
+/**
+ * class that encapsulate the current state of game for processing
+ *
+ */
+
 public class ToxicCleanupGameState implements GameState {
+    /** handles player state. */
     private PlayerManager player;
+    /** the game world contain tiles. */
     private World world;
+    /** handles machine operations. */
     private Machines machines;
 
-    // at stage 0, these were only PlayerManager player.
-    public ToxicCleanupGameState(PlayerManager player){
+    /**
+     * basic constructor for initial game stage
+     *
+     * @param player instance of player manager.<br>
+     *
+     * note: stage 0
+     */
+    public ToxicCleanupGameState(PlayerManager player) {
         this.player = player;
     }
-    // at stage 2, we add Machines and World.
-    public ToxicCleanupGameState(World world, PlayerManager player, Machines machines){
+
+    /**
+     * full constructor for advanced game stages
+     *
+     * @param player the player manager
+     * @param machines the machine manager
+     * @param world the game world.<br>
+     *
+     * note: stage 2
+     */
+    public ToxicCleanupGameState(World world, PlayerManager player, Machines machines) {
         this.player = player;
         this.world = world;
         this.machines = machines;
     }
 
     @Override
-    public World getWorld(){
+    public World getWorld() {
         return world;
     }
+
     @Override
-    public Player getPlayer(){
+    public Player getPlayer() {
         return player;
     }
+
     @Override
-    public Machines getMachines(){
+    public Machines getMachines() {
         return machines;
     }
 

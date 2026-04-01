@@ -12,20 +12,34 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * utility class for building a toxic world from strings or map files
+ *
+ */
 public class WorldBuilder {
 
-    public static List<Tile> fromString(Dimensions dimensions, String text) throws WorldLoadException{
+    /**
+     * Read the encoded world text and construct the corresponding list of tilesRead the encoded world text
+     * and construct the corresponding list of tiles
+     *
+     * @param dimensions the game dimension
+     * @param text       the raw map string
+     * @return a list of parsed tiles
+     * @throws WorldLoadException if map format is incorrect
+     */
+    public static List<Tile> fromString(Dimensions dimensions, String text)
+            throws WorldLoadException {
         List<Tile> tiles = new ArrayList<>();
         String[] lines = text.split("\n");
 
         int n = dimensions.windowSize() / dimensions.tileSize();
 
         // validate length of line (n)
-        if(lines.length != n){
+        if (lines.length != n) {
             throw new WorldLoadException("Invalid number of lines. Expected " + n);
         }
 
-        for(int rows = 0; rows < n; rows++){
+        for (int rows = 0; rows < n; rows++) {
             String line = lines[rows];
 
             if (lines.length == n) {
@@ -49,16 +63,35 @@ public class WorldBuilder {
         return tiles;
     }
 
-    public static ToxicWorld fromFile(Dimensions dimensions, String filepath) throws IOException, WorldLoadException {
+    /**
+     * Read the provided file and attempt to create a new world based on the tile encoding in the file.
+     *
+     * @param dimensions the game dimension
+     * @param filepath   the path to the map file
+     * @return A new world containing all tiles in the specified file
+     * @throws IOException        if the file path doesn't exist or otherwise can't be read,
+     *                            as thrown by FileManager.readFile(String).
+     * @throws WorldLoadException If the tile encoding is invalid
+     *
+     */
+    public static ToxicWorld fromFile(Dimensions dimensions, String filepath)
+            throws IOException, WorldLoadException {
         FileManager fileManager = new FileManager();
         String content = fileManager.readFile(filepath);
         return fromTiles(fromString(dimensions, content));
     }
 
-    public static ToxicWorld fromTiles(List<Tile> tiles){
+    /**
+     * Constructs a new ToxicWorld pre-populated with the given tiles
+     *
+     * @param tiles the list of tiles to place into the new world
+     * @return a new ToxicWorld containing all given tiles
+     *
+     */
+    public static ToxicWorld fromTiles(List<Tile> tiles) {
         ToxicWorld toxicWorld = new ToxicWorld();
 
-        for(int i = tiles.size() - 1; i >= 0; i--){
+        for (int i = tiles.size() - 1; i >= 0; i--) {
             toxicWorld.place(tiles.get(i));
         }
         return toxicWorld;

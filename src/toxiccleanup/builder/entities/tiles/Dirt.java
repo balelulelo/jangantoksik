@@ -17,22 +17,46 @@ import toxiccleanup.engine.renderer.Renderable;
 
 import java.util.List;
 
-public class Dirt extends Tile implements PlayerOverHook, Tickable, RenderableGroup, HasTick, Positionable, Renderable {
+/**
+ * A tile of dirt that can be paved and used as the base for building machines
+ */
+
+public class Dirt extends Tile implements PlayerOverHook,
+        Tickable, RenderableGroup, HasTick, Positionable, Renderable {
+    /**
+     * boolean whether the dirt tile is already paved or not.
+     */
     private boolean isPaved = false;
 
+    /**
+     * constructs a new dirt tile at the given position
+     *
+     * @param position the pixel position of the dirt tile
+     *
+     */
     public Dirt(Positionable position) {
         super(position, SpriteGallery.dirt);
         try {
             updateSprite("default");
         } catch (ArtNotFoundException exception) {
+            // if the art is not found (ex: wrong name), display error
             System.out.println("Art not found: " + exception.getMessage());
         }
     }
 
+    /**
+     * check if the tile is already paved or not.
+     *
+     * @return true if the dirt tile is paved, otherwise return false
+     *
+     */
     public boolean isPaved() {
         return isPaved;
     }
 
+    /**
+     * paves the dirt tile to allow machines on top of it
+     */
     public void pave() {
         this.isPaved = true;
         // change the gallery to paved from dirt
@@ -40,8 +64,16 @@ public class Dirt extends Tile implements PlayerOverHook, Tickable, RenderableGr
         try {
             updateSprite("default");
         } catch (ArtNotFoundException exception) {
+            // if the sprite is missing, skip updateSprite
         }
     }
+
+    /**
+     * attempts to spawn a solar panel on this tile with the provided spawner
+     *
+     * @param spawner machine manager to spawn solar panel
+     *
+     */
 
     public void attemptSpawnSolarPanel(Machines spawner) {
         SolarPanel solarPanel = spawner.spawnSolarPanel(getPosition());
@@ -49,6 +81,13 @@ public class Dirt extends Tile implements PlayerOverHook, Tickable, RenderableGr
             placeOn(solarPanel);
         }
     }
+
+    /**
+     * attempts to spawn a teleporter on this tile with the provided spawner
+     *
+     * @param spawner machine manager to spawn teleporter
+     *
+     */
 
     public void attemptSpawnTeleporter(Machines spawner) {
         Teleporter teleporter = spawner.spawnTeleporter(getPosition());
@@ -79,7 +118,6 @@ public class Dirt extends Tile implements PlayerOverHook, Tickable, RenderableGr
             if (state.getMouse().isRightPressed()) {
                 attemptSpawnTeleporter(game.getMachines());
             }
-        } // I called playerOver again below here previously. that's what caused the
-        // stack overflow
+        }
     }
 }

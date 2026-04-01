@@ -77,16 +77,29 @@ public class ToxicCleanup implements Game {
         this.machine = new MachinesManager();
         this.gui = new GuiManager();
 
+        // ====== Starter Teleporter ======
+        int tileSize = dimensions.tileSize();
+        int centerOffset = tileSize / 2;
+
+
+        int gridX = dimensions.pixelToTile(starterTeleporterPosition.getX());
+        int gridY = dimensions.pixelToTile(starterTeleporterPosition.getY());
+        int tpX = gridX * dimensions.tileSize() + dimensions.tileSize() / 2;
+        int tpY = gridY * dimensions.tileSize() + dimensions.tileSize() / 2;
+        Position initialPosition = new Position(tpX, tpY);
+
         // starter teleporter logic
-        Teleporter starterTeleporter = new Teleporter(starterTeleporterPosition);
-        List<Tile> tiles = world.tilesAtPosition(starterTeleporterPosition, dimensions);
+        Teleporter starterTeleporter = new Teleporter(initialPosition);
+        List<Tile> tiles = world.tilesAtPosition(initialPosition, dimensions);
 
         if (!tiles.isEmpty()) {
-            tiles.get(0).placeOn(starterTeleporter);
-            machine.spawnTeleporter(starterTeleporterPosition);
-        }
+            tiles.get(tiles.size() - 1).placeOn(starterTeleporter);
 
+            machine.spawnTeleporter(initialPosition);
+            machine.setPower(14);
+        }
     }
+
 
     /**
      * Advances the game by one frame.
@@ -119,17 +132,33 @@ public class ToxicCleanup implements Game {
      */
     @Override
     public void tick(EngineState engine) {
+
         GameState state = new ToxicCleanupGameState(this.world, this.player, this.machine);
 
+        if (!world.isToxic() || !player.isAlive()) {
+            // ====== Win Lose ======
+            // if the world is not toxic anymore (all toxic field are cleaned up), they win
+            if (!world.isToxic()) {
+                gui.win(engine);
+                return;
+                // if the player is dead, they lost
+            } else if (!player.isAlive()) {
+                // in order to display the skull sprite when the player dies
+                player.tick(engine, state);
+                gui.lose(engine);
+                return;
+            }
+        }
+
         // updates the player, gui, and world
-        this.world.tick(engine, state);
         this.player.tick(engine, state);
+        this.world.tick(engine, state);
         this.gui.tick(engine, state);
 
         // ====== Player and Tile ======
-
         // get the tile exactly below player and using a method from world
         List<Tile> tiles = world.tilesAtPosition(player.getPosition(), engine.getDimensions());
+
         // call playerOver for each tile / entity in that place
         if (!tiles.isEmpty()) {
             // get the top most tile (0 is the first index of the tile)
@@ -152,18 +181,6 @@ public class ToxicCleanup implements Game {
             // if the world is not toxic anymore. set the timer to 0
             dmgTime = 0;
         }
-
-        // ====== Win Lose ======
-        // if the world is not toxic anymore (all toxic field are cleaned up), they win
-        if (!world.isToxic()) {
-            gui.win(engine);
-        }
-        // if the player is dead, they lost
-        if (!player.isAlive()) {
-            gui.lose(engine);
-        }
-
-
     }
 
     /**
@@ -196,3 +213,4 @@ public class ToxicCleanup implements Game {
     }
 
 }
+

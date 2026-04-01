@@ -24,10 +24,15 @@ import toxiccleanup.engine.renderer.Renderable;
  * @stage3
  */
 public class SolarPanel extends GameEntity {
-    // timer is 120 frames
+    // timer is 120 frames (interval berween power generation)
     private int timer = 120;
     public static final int COST = 3;
 
+    /**
+     * constructs a solar panel at a specified position
+     *
+     * @param position the pixel position
+     */
     public SolarPanel(Positionable position) {
         super(position);
         this.setSprite(SpriteGallery.solarPanel.getSprite("default"));

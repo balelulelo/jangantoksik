@@ -30,6 +30,12 @@ public class Teleporter extends GameEntity implements PlayerOverHook, Powered {
     private int spriteAnimation = 12;
     private int frame = 1;
 
+    /**
+     * constructs a teleporter at a specified location
+     *
+     * @param position the pixel position
+     */
+
     public Teleporter(Positionable position) {
         super(position);
         this.setSprite(SpriteGallery.teleporter.getSprite("1"));
@@ -61,7 +67,8 @@ public class Teleporter extends GameEntity implements PlayerOverHook, Powered {
     @Override
     public void playerOver(EngineState state, GameState game) {
         // if player has the required power (at least 2) and "E" button is pressed
-        if ((game.getMachines().getPower() >= getPowerRequirement()) && state.getKeys().isDown('e')) {
+        if ((game.getMachines().getPower() >= getPowerRequirement())
+                && state.getKeys().isDown('e')) {
             Positionable position = game.getMachines().getNextTeleporterPosition(getPosition());
 
             // move the player to another teleporter destination

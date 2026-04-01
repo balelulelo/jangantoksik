@@ -9,12 +9,31 @@ import toxiccleanup.engine.ui.Text;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * manages the GUI elements including power bars, hp meter, and timer
+ *
+ */
+
 public class GuiManager implements Overlay {
+    /**
+     * number of ticks remaining in the game (5 minutes).
+     */
     private int gameplayTicks = 18000;
+    /**
+     * List of HUD elements to be rendered.
+     */
     private List<Renderable> displayHuds = new ArrayList<>();
     private String timer = "";
+    /**
+     * overlay for win and lose
+     */
     private Text gameStatus;
     private Text timerDisplay;
+
+    /**
+     * constructs a new Gui manager
+     *
+     */
 
     public GuiManager() {
         this.gameplayTicks = gameplayTicks;
@@ -24,23 +43,29 @@ public class GuiManager implements Overlay {
         this.timerDisplay = timerDisplay;
     }
 
+    @Override
     public void tick(EngineState state, GameState game) {
         // clear initial state first so the old contents doesn't overlap
         this.displayHuds.clear();
-        // if gameplay ticks (timer) still runs, subtract it periodically
-        if (gameplayTicks > 0) {
-            gameplayTicks--;
-        }
+
         // get the size of the tile to scale icons (could be used multiple times)
         int tileSize = state.getDimensions().tileSize();
-        int centerOffset = tileSize / 2;
         int windowSize = state.getDimensions().windowSize();
 
 
         // ====== TIMER ======
+        // ongoing ticks is the current tick from engine
+        // remaining ticks counts the remaining from 5 minutes (18.000 ticks)
+        int ongoingTicks = state.currentTick();
+        int remainingTicks = gameplayTicks - ongoingTicks;
+
+        // dont let remainingTicks turn negative
+        if (remainingTicks < 0) {
+            remainingTicks = 0;
+        }
         // per Javadoc: 18.000 ticks at 60 ticks per second.
         // 18.000 / 60 = 300 seconds (5 minutes)
-        int secondsTicks = gameplayTicks / 60;
+        int secondsTicks = remainingTicks / 60;
         int minuteTicks = secondsTicks / 60;
         // 300 % 60 will be 0. since gameplayTicks will be decremented periodically
         // this will mimic a second countdown (0 -> 59 -> 58 -> 57 -> ... -> and goes on)
@@ -57,10 +82,15 @@ public class GuiManager implements Overlay {
         } else {
             timerDisplay.update(this.timer);
         }
-
+        // if gameplay ticks (timer) still runs, subtract it periodically
+        if (gameplayTicks > 0) {
+            gameplayTicks--;
+        }
 
         // ====== POWER ======
         // sets a power icon in the top left of the game x = 0, y = 0
+        int centerOffset = tileSize / 2;
+
         this.displayHuds.add(new PowerIcon(new Position(centerOffset, centerOffset)));
 
         int currentPower = game.getMachines().getPower();
@@ -90,6 +120,12 @@ public class GuiManager implements Overlay {
         }
     }
 
+    /**
+     * Displays you win game overlay
+     *
+     * @param state the engine state
+     */
+
     public void win(EngineState state) {
         String statusMessage = "YOU WIN";
         int tileSize = state.getDimensions().tileSize();
@@ -97,6 +133,12 @@ public class GuiManager implements Overlay {
         gameStatus = new Text(statusMessage, windowSize / 2, windowSize / 2, tileSize);
     }
 
+    /**
+     * Displays game over game overlay
+     *
+     * @param state the engine state
+     *
+     */
     public void lose(EngineState state) {
         String statusMessage = "GAME OVER";
         int tileSize = state.getDimensions().tileSize();
@@ -104,7 +146,7 @@ public class GuiManager implements Overlay {
         gameStatus = new Text(statusMessage, windowSize / 2, windowSize / 2, tileSize);
     }
 
-
+    @Override
     public List<Renderable> render() {
         List<Renderable> renderables = new ArrayList<>(displayHuds);
         // timer renderer
