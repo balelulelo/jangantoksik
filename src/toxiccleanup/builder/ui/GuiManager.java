@@ -82,10 +82,6 @@ public class GuiManager implements Overlay {
         } else {
             timerDisplay.update(this.timer);
         }
-        // if gameplay ticks (timer) still runs, subtract it periodically
-        if (gameplayTicks > 0) {
-            gameplayTicks--;
-        }
 
         // ====== POWER ======
         // sets a power icon in the top left of the game x = 0, y = 0
